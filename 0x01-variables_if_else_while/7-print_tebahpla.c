@@ -22,3 +22,12 @@ char chr;
 	putchar('\n');
 	return (0);
 }
+
+int main() {
+  int i;
+  for (i = 122; i >= 97; i--) {
+    putchar(i);
+  }
+  putchar('\n');
+  return 0;
+}
