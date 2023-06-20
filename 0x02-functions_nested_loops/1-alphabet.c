@@ -1,15 +1,25 @@
-#include "holberton.h"
+#include <ctype.h>
+#include "main.h"
+
 /**
- * print_alphabet - prints the english alphabet from a-z.
- * Return: Nothing.
- */
+ * print_alphabet - Function that prints the alphabet, in lowercase,
+ * followed by a new line.
+ *
+ * You can only use _putchar twice in your code.
+ *
+ * Return: 0.
+*/
+
 void print_alphabet(void)
 {
-	char c;
 
-	for (c = 'a'; c <= 'z'; c++)
+	int x;
+	int lower_x;
+
+	for (x = 'A'; x <= 'Z'; x++)
 	{
-		_putchar(c);
+		lower_x = tolower(x);
+		_putchar(lower_x);
 	}
 	_putchar('\n');
 }
