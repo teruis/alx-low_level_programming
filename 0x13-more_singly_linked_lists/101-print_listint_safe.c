@@ -1,11 +1,12 @@
-#include <stdio.h>
 #include "lists.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 /**
- * print_listint_safe - prints a list
- * @head: address of pointer to first node
+ * print_listint_safe - Prints a listint_t linked list.
+ * @head: Pointer to the head of the linked list.
  *
- * Return: number of nodes in the list
+ * Return: The number of nodes in the list.
  */
 size_t print_listint_safe(const listint_t *head)
 {
@@ -16,19 +17,13 @@ size_t print_listint_safe(const listint_t *head)
     {
         printf("[%p] %d\n", (void *)current, current->n);
         count++;
-
-        if (current->next == NULL)
-        {
-            break;
-        }
-        else if (current->next <= current)
+        if (current <= current->next)
         {
             printf("-> [%p] %d\n", (void *)current->next, current->next->n);
             break;
         }
-
         current = current->next;
     }
 
-    return count;
+    return (count);
 }
