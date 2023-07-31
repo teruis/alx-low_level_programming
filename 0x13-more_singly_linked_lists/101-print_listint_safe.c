@@ -26,7 +26,7 @@ const listint_t **_r(const listint_t **list, size_t size, const listint_t *new)
 		newlist[i] = list[i];
 	newlist[i] = new;
 	free((void *)list);
-	return newlist;
+	return (newlist);
 }
 
 /*
@@ -35,8 +35,6 @@ const listint_t **_r(const listint_t **list, size_t size, const listint_t *new)
 *
 * Return: the number of nodes in the list
 */
-
-
 size_t print_listint_safe(const listint_t *head)
 {
     size_t i, num = 0;
@@ -49,29 +47,19 @@ size_t print_listint_safe(const listint_t *head)
             if (head == list[i])
             {
                 printf("-> [%p] %d\n", (void *)head, head->n);
-                printf("Loop detected, exiting...\n");
+                free(list)
                 return num;
             }
         }
 
         /* Reallocate memory for the list */
-        list = realloc(list, (num + 1) * sizeof(*list));
-        if (list == NULL)
-        {
-            printf("Memory allocation failed, exiting...\n");
-            exit(EXIT_FAILURE);
-        }
-
-        /* Add current node to the list */
-        list[num] = head;
         num++;
-
-        /* Print current node */
-        printf("[%p] %d\n", (void *)head, head->n);
-
-        /* Move to the next node */
+        list = _r(list, num, head);
+        printf("-> [%p] %d\n", (void *)head, head->n);
         head = head->next;
+
     }
 
-    return num;
+	free(list);
+	return (num);
 }
