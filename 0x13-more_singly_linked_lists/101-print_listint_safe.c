@@ -1,26 +1,77 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include "lists.h" // Assuming you have a header file with the definition of listint_t
+#include <stdio.h>
+#include "lists.h"
+
+/*
+ * _r - reallocates memory for an array of pointers
+ * to the nodes in a linked list
+ * @list: the old list to append
+ * @size: size of the new list (always one more than the old list)
+ * @new: new node to add to the list
+ * Return: pointer to the new list
+ */
+const listint_t **_r(const listint_t **list, size_t size, const listint_t *new)
+{
+	const listint_t **newlist;
+	size_t i;
+
+	newlist = malloc(size * sizeof(listint_t *));
+	if (newlist == NULL)
+	{
+		free((void *)list);
+		exit(98);
+	}
+
+	for (i = 0; i < size - 1; i++)
+		newlist[i] = list[i];
+	newlist[i] = new;
+	free((void *)list);
+	return newlist;
+}
+
+/*
+* print_listint_safe - prints a listint_t linked list.
+* head: pointer to the start of the list
+*
+* Return: the number of nodes in the list
+*/
+
 
 size_t print_listint_safe(const listint_t *head)
 {
-    size_t count = 0;
-    const listint_t *current = head;
+    size_t i, num = 0;
+    const listint_t **list = NULL;
 
-    while (current != NULL)
+    while (head != NULL)
     {
-        printf("[%p] %d\n", (void *)current, current->n);
-        count++;
-
-        if (current >= current->next)
+        for (i = 0; i < num; i++)
         {
-            printf("-> [%p] %d\n", (void *)current->next, current->next->n);
-            printf("Error: linked list is not properly terminated\n");
-            exit(98);
+            if (head == list[i])
+            {
+                printf("-> [%p] %d\n", (void *)head, head->n);
+                printf("Loop detected, exiting...\n");
+                return num;
+            }
         }
 
-        current = current->next;
+        /* Reallocate memory for the list */
+        list = realloc(list, (num + 1) * sizeof(*list));
+        if (list == NULL)
+        {
+            printf("Memory allocation failed, exiting...\n");
+            exit(EXIT_FAILURE);
+        }
+
+        /* Add current node to the list */
+        list[num] = head;
+        num++;
+
+        /* Print current node */
+        printf("[%p] %d\n", (void *)head, head->n);
+
+        /* Move to the next node */
+        head = head->next;
     }
 
-    return count;
+    return num;
 }
