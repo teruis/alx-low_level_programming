@@ -1,24 +1,65 @@
 #include "lists.h"
+#include <stdio.h>
 
-/**
- * reverse_listint - reverses a linked list
- * @head: pointer to the first node in the list
- *
- * Return: pointer to the first node in the new list
- */
-listint_t *reverse_listint(listint_t **head)
+size_t looped_listint_len(const listint_t *head);
+size_t print_listint_safe(const listint_t *head);
+size_t looped_listint_len(const listint_t *head)
 {
-	listint_t *prev = NULL, *next = NULL;
+    const listint_t *tortoise = head;
+    const listint_t *hare = head;
 
-	while (*head)
-	{
-		next = (*head)->next;
-		(*head)->next = prev;
-		prev = *head;
-		*head = next;
-	}
+    if (head == NULL || head->next == NULL)
+        return 0;
 
-	*head = prev;
+    while (hare != NULL && hare->next != NULL)
+    {
+        tortoise = tortoise->next;
+        hare = hare->next->next;
 
-	return (*head);
+        if (tortoise == hare)
+        {
+            size_t count = 1;
+            tortoise = tortoise->next;
+
+            while (tortoise != hare)
+            {
+                count++;
+                tortoise = tortoise->next;
+            }
+
+            return count;
+        }
+    }
+
+    return 0;
+}
+
+size_t print_listint_safe(const listint_t *head)
+{
+    size_t count = 0;
+    size_t loop_length = looped_listint_len(head);
+
+    if (loop_length == 0)
+    {
+        while (head != NULL)
+        {
+            printf("[%p] %d\n", (void *)head, head->n);
+            head = head->next;
+            count++;
+        }
+    }
+    else
+    {
+        while (count < loop_length)
+        {
+            printf("[%p] %d\n", (void *)head, head->n);
+            head = head->next;
+            count++;
+        }
+
+        printf("-> [%p] %d\n", (void *)head, head->n);
+        count++;
+    }
+
+    return count;
 }

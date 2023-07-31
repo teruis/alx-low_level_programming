@@ -26,7 +26,7 @@ const listint_t **_r(const listint_t **list, size_t size, const listint_t *new)
 		newlist[i] = list[i];
 	newlist[i] = new;
 	free((void *)list);
-	return newlist;
+	return (newlist);
 }
 
 /*
@@ -47,12 +47,11 @@ size_t print_listint_safe(const listint_t *head)
             if (head == list[i])
             {
                 printf("-> [%p] %d\n", (void *)head, head->n);
-                free(list);
+                free(list)
                 return num;
             }
         }
 
-        /* Reallocate memory for the list */
         num++;
         list = _r(list, num, head);
         printf("-> [%p] %d\n", (void *)head, head->n);
@@ -60,7 +59,6 @@ size_t print_listint_safe(const listint_t *head)
 
     }
 
-	free((void *)list);
-	return num;
+	free(list);
+	return (num);
 }
-
