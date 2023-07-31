@@ -1,6 +1,6 @@
+#include "lists.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include "lists.h"
 
 /*
  * _r - reallocates memory for an array of pointers
@@ -26,7 +26,7 @@ const listint_t **_r(const listint_t **list, size_t size, const listint_t *new)
 		newlist[i] = list[i];
 	newlist[i] = new;
 	free((void *)list);
-	return (newlist);
+	return newlist;
 }
 
 /*
@@ -47,7 +47,7 @@ size_t print_listint_safe(const listint_t *head)
             if (head == list[i])
             {
                 printf("-> [%p] %d\n", (void *)head, head->n);
-                free(list)
+                free(list);
                 return num;
             }
         }
@@ -60,6 +60,7 @@ size_t print_listint_safe(const listint_t *head)
 
     }
 
-	free(list);
-	return (num);
+	free((void *)list);
+	return num;
 }
+
