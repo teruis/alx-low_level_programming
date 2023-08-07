@@ -1,60 +1,43 @@
-#include "main.h"
+#include <main.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-#define BUFFER_SIZE 1024
+int main(int argc, char *argv[]) {
+  if (argc != 3) {
+    dprintf(2, "Usage: cp file_from file_to\n");
+    exit(97);
+  }
 
-int main(int argc, char **argv) {
-    if (argc != 3) {
-        fprintf(stderr, "Usage: %s file_from file_to\n", argv[0]);
-        exit(97);
-    }
+  char *file_from = argv[1];
+  char *file_to = argv[2];
 
-    char *file_from = argv[1];
-    char *file_to = argv[2];
+  int fd_from = open(file_from, O_RDONLY);
+  if (fd_from < 0) {
+    dprintf(2, "Error: Can't read from file %s\n", file_from);
+    exit(98);
+  }
 
-    // Check if file_to already exists
-    struct stat sb;
-    if (stat(file_to, &sb) == 0) {
-        // Truncate file_to
-        ftruncate(open(file_to, O_RDWR), 0);
-    }
+  int fd_to = open(file_to, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+  if (fd_to < 0) {
+    dprintf(2, "Error: Can't write to file %s\n", file_to);
+    exit(99);
+  }
 
-    // Open file_from and file_to
-    int fd_from = open(file_from, O_RDONLY);
-    if (fd_from == -1) {
-        fprintf(stderr, "Error: Can't read from file %s\n", file_from);
-        exit(98);
-    }
+  char buffer[1024];
+  int bytes_read;
+  while ((bytes_read = read(fd_from, buffer, sizeof(buffer))) > 0) {
+    write(fd_to, buffer, bytes_read);
+  }
 
-    int fd_to = open(file_to, O_WRONLY | O_CREAT | O_TRUNC);
-    if (fd_to == -1) {
-        fprintf(stderr, "Error: Can't create file %s\n", file_to);
-        exit(99);
-    }
+  if (bytes_read < 0) {
+    dprintf(2, "Error: Can't read from file %s\n", file_from);
+    exit(98);
+  }
 
-    // Read and write buffer
-    char buffer[BUFFER_SIZE];
-    ssize_t read_bytes, write_bytes;
+  close(fd_from);
+  close(fd_to);
 
-    // Copy contents of file_from to file_to
-    while ((read_bytes = read(fd_from, buffer, BUFFER_SIZE)) > 0) {
-        write_bytes = write(fd_to, buffer, read_bytes);
-        if (write_bytes != read_bytes) {
-            fprintf(stderr, "Error: Can't write to file %s\n", file_to);
-            exit(99);
-        }
-    }
-
-    // Close file descriptors
-    close(fd_from);
-    close(fd_to);
-
-    // Set permissions of file_to to rw-rw-r--
-    struct stat sb;
-    stat(file_to, &sb);
-    sb.st_mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
-    chmod(file_to, sb.st_mode);
-
-    return 0;
+  return 0;
 }
