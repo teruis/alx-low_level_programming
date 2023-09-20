@@ -1,4 +1,3 @@
 #!/bin/bash
-gcc *.c -c -fPIC
-# Create the dynamic library.
-gcc *.o -shared -o liball.so
+gcc -fPIC -c *.c
+gcc -shared *.o -o liball.so
